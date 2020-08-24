@@ -44,8 +44,10 @@ class Snippet(Colors_ANSI):
 
     # Adds ANSI escape characters to syntax terms like class, for, if, in else, elif,
     def highlight_syntax(self,snippet_string):
+
         syntax_terms = ["class","for","if","==","+","-","*"]
         snippet_list = snippet_string.split()
+
         for index,word in enumerate(snippet_list):
             if word in syntax_terms:
                 if word.lower() == "class":
@@ -55,9 +57,6 @@ class Snippet(Colors_ANSI):
         return " ".join(snippet_list)   
         
                     
-
-
-        
 
 if __name__ == '__main__':
     thing = Snippet("label","language","class for if")

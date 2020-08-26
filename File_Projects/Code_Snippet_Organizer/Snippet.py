@@ -6,19 +6,19 @@ from Colors_ANSI import Colors_ANSI
 class Snippet(Colors_ANSI):
     
     def __init__(self,_label,_language,_snippet_string):
-        self.label = self.change_color(_label,"CYAN")
-        self.language = self.change_color(_language,"CYAN")
+        self.label = _label
+        self.language = _language
         self.snippet_string = _snippet_string
-        self.snippet_syntax_highlight = self.highlight_syntax(self.snippet_string)
+        self.snippet_syntax_highlight = self.highlight_syntax()
         
     def __str__(self):
         return(f"""\nLabel: {self.label}\nLanguage: {self.language}\nCode: \n\t{self.snippet_syntax_highlight}""")
 
     # Adds ANSI escape characters to syntax terms like class, for, if, in else, elif,
-    def highlight_syntax(self,snippet_string):
+    def highlight_syntax(self):
 
         syntax_terms = ["class","for","if","==","+","-","*"]
-        snippet_list = snippet_string.split()
+        snippet_list = self.snippet_string.split()
 
         for index,word in enumerate(snippet_list):
             if word in syntax_terms:

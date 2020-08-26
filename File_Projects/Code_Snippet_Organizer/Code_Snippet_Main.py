@@ -21,6 +21,8 @@ class Snippet_Manager:
 
     # Add the snippet to the code_snippets.txt file for long term storage
     def save_snippet(self,snippet):
+        with open('Code_Snippet_Organizer/code_snippets.txt','a') as storage_file:
+            storage_file.write(f"\nLabel: {snippet.label}\nLanguage: {snippet.language}\nCode:\n{snippet.snippet_string}")
         print("SAVED!")
     
     def delete_snippet(self, Label):
@@ -35,36 +37,41 @@ class Snippet_Manager:
         user_input = ""
         while user_input != "exit":
             user_input = input("Do you want to save the snippet, make some changes or exit? (save/change/exit): ")
-            # This block handles checking user input and allowing the user to make edits before saving or canceling the creation of the snippet
+            # This block handles checking user input and allowing the user to make edits before saving or canceling the creation of the snippet (maybe in seperate function?)
             try:
                 # checking if the user has entered a correct input
                 if user_input == "save":
                     self.save_snippet(temp_snippet)
                     break
                 elif user_input == "change":
+                    # checking if user has entered what they would like to change correctly
                     user_decision = input("Would you like to change the Label, Language, Snippet, or Cancel?\nEnter Choice: ")
-                    if user_decision == "Label":
-                        label = input("Please Enter Label: ")
-                    elif user_decision == "Language":
-                        language = input("Please Enter Language: ")
-                    elif user_decision == "Snippet":
-                        snippet_string = input("Please Enter Code Snippet:\n") 
-                    elif user_decision == "Cancel":
+                    if user_decision.capitalize() == "Label":
+                        temp_snippet.label = input("Please Enter Label: ")
+                    elif user_decision.capitalize() == "Language":
+                        temp_snippet.language = input("Please Enter Language: ")
+                    elif user_decision.capitalize() == "Snippet":
+                        temp_snippet.snippet_string = input("Please Enter Code Snippet:\n") 
+                    elif user_decision.capitalize() == "Cancel":
                         pass
+                    # if a valid choice was not made a custom error is raised
                     else:
                         raise UserInputError
+                # check if user did not enter a valid choice
                 elif user_input not in ["save","change","exit"]:
                     raise Exception
             except UserInputError: 
+                # asks user for a valid input
                 while user_decision not in ["Label","Language","Snippet"]:
                     user_decision = input("Please enter Langauge, Label, Snippet, or exit: ")
             except:
+                # ask user for a valid input until valid input is given
                 while(user_input != "save" and user_input != "change"):
                     user_input = input("Please enter either save or change: ")
-        print("Made it") 
+        
         #TODO: conttinue implementing functions and adding them to this spagehtti (which I'll have to clean up later)
     # Returns code snippet from storage file
-    def get_snippet(self,snippet_object):
+    def get_snippet(self,_label):
         pass
 
     #  Grab a short title/label, language of snippet, and snippet from user
@@ -75,11 +82,8 @@ class Snippet_Manager:
         
         return user_Label, user_Language, user_snippet_string
 
-    # Grab user input choice while handling errors
-    def get_userinput(self):
-        pass
     # Print a code snippet with syntax highlighting
-    def print_code(self,snippet_object):
+    def print_code(self,_label):
         pass
 
     # Printing the basic menu with options for the user

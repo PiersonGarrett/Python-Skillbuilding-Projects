@@ -11,6 +11,7 @@
 # Import requried libraries and classes
 from Snippet import Snippet
 from errors import UserInputError
+import os
 # Class for a Code Snippet
 
 # Eventually whatever is needed for a GUI will be imported and built here
@@ -18,11 +19,21 @@ from errors import UserInputError
 class Snippet_Manager:
     # A list for easy lookup of snippets
     labels = []
-
+    def __init__(self):
+        self.set_user_directory()
+    
+    # need to make sure the user is in the correct directory otherwise we can't access the same storage file
+    def set_user_directory(self):
+        # This needs to be altered based on where you store the files for this program
+        os.chdir(os.path.expanduser('~') + '/src/python_capstone_projects/File_Projects/Code_Snippet_Organizer')
+    
     # Add the snippet to the code_snippets.txt file for long term storage
     def save_snippet(self,snippet):
-        with open('Code_Snippet_Organizer/code_snippets.txt','a') as storage_file:
-            storage_file.write(f"\nLabel: {snippet.label}\nLanguage: {snippet.language}\nCode:\n{snippet.snippet_string}")
+        # having weird issues with storage, need to make sure that we can find the storage file
+        storage_file = 'code_snippets.txt'
+        
+        with open(storage_file,'a') as storage_file:
+            storage_file.write(f"Label: {snippet.label}\nLanguage: {snippet.language}\nCode:\n{snippet.snippet_string}\n")
         print("SAVED!")
     
     def delete_snippet(self, Label):
@@ -31,49 +42,45 @@ class Snippet_Manager:
     def create_snippet(self):
         # get info for snippet from user, create snippet
         label,language, snippet_string = self.get_snippet_info()
-        temp_snippet = Snippet(label,language,snippet_string)
 
-        # Ask user if they want to save the snippet
-        user_input = ""
-        while user_input != "exit":
-            user_input = input("Do you want to save the snippet, make some changes or exit? (save/change/exit): ")
-            # This block handles checking user input and allowing the user to make edits before saving or canceling the creation of the snippet (maybe in seperate function?)
-            try:
-                # checking if the user has entered a correct input
-                if user_input == "save":
-                    self.save_snippet(temp_snippet)
-                    break
-                elif user_input == "change":
-                    # checking if user has entered what they would like to change correctly
-                    user_decision = input("Would you like to change the Label, Language, Snippet, or Cancel?\nEnter Choice: ")
-                    if user_decision.capitalize() == "Label":
-                        temp_snippet.label = input("Please Enter Label: ")
-                    elif user_decision.capitalize() == "Language":
-                        temp_snippet.language = input("Please Enter Language: ")
-                    elif user_decision.capitalize() == "Snippet":
-                        temp_snippet.snippet_string = input("Please Enter Code Snippet:\n") 
-                    elif user_decision.capitalize() == "Cancel":
-                        pass
-                    # if a valid choice was not made a custom error is raised
-                    else:
-                        raise UserInputError
-                # check if user did not enter a valid choice
-                elif user_input not in ["save","change","exit"]:
-                    raise Exception
-            except UserInputError: 
-                # asks user for a valid input
-                while user_decision not in ["Label","Language","Snippet"]:
-                    user_decision = input("Please enter Langauge, Label, Snippet, or exit: ")
-            except:
-                # ask user for a valid input until valid input is given
-                while(user_input != "save" and user_input != "change"):
-                    user_input = input("Please enter either save or change: ")
+        while True:
+            user_input = self.get_user_choice()
+            if user_input == 'save':
+                self.save_snippet(Snippet(label,language,snippet_string))
+                break
+            elif user_input == 'change':
+                user_choice = self.get_user_choice(option=1)
+                if user_choice == 'label':
+                    label = input('What would you like to change the label to?\nEnter label: ')
+                elif user_choice == 'language':
+                    language = input('What would you like to change the language to?\nEnter language: ')
+
+                elif user_choice == 'Snippet':
+                    snippet_string = input('What would you like to change the code to?\nEnter code: ')
+            else:
+                break
+
         
-        #TODO: conttinue implementing functions and adding them to this spagehtti (which I'll have to clean up later)
     # Returns code snippet from storage file
     def get_snippet(self,_label):
         pass
-
+    
+    def get_user_choice(self,option = 0):
+        # Checks user input when asking to save, change, or exit
+        if option == 0:
+            user_input = input("Do you want to save the snippet, make some changes or exit? (save/change/exit): ").lower()
+            if user_input not in ['save','change','exit']:
+                while(user_input != "save" and user_input != "change"):
+                    user_input = input("Please enter either save or change: ").lower()
+            return user_input
+        # Checks user input for modifying a given snippet
+        elif option == 1:
+            # checking if user has entered what they would like to change correctly
+            user_input = input("Would you like to change the label, language, snippet, or exit?\nEnter Choice: ").lower()
+            # asks user for a valid input
+            while user_input not in ["label","language","snippet"]:
+                user_input = input("Please enter label, language, snippet, or exit: ").lower()
+            return user_input
     #  Grab a short title/label, language of snippet, and snippet from user
     def get_snippet_info(self):
         user_Label = input("Please enter a Label: ")

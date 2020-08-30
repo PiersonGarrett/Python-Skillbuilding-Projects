@@ -13,8 +13,6 @@ from Snippet import Snippet
 from errors import UserInputError
 import re, os, sys
 
-# Class for a Code Snippet
-
 # Eventually whatever is needed for a GUI will be imported and built here with a better method for inputing user code snippets. Currently the user can only input one line of code
 
 class Snippet_Manager:
@@ -59,6 +57,7 @@ class Snippet_Manager:
                 storage_file.write(f"\nLabel: {snippet.label}\nLanguage: {snippet.language}\nCode:\n{snippet.snippet_string}\n")
         print("Deleted!")
         input("Press enter to continue.")
+    
     # create a new snippet and display for user
     def create_snippet(self):
         # get info for snippet from user, create snippet
@@ -84,7 +83,6 @@ class Snippet_Manager:
         
     # Returns code snippet from storage file and prints it with syntax highlighting
     def get_snippet(self,_label):
-        temp_snippet_arr = []
         
         # open storage file
         with open('code_snippets.txt','r') as storage_file:
@@ -135,14 +133,15 @@ class Snippet_Manager:
         print("1) Create a New Snippet\n2) View an Existing Snippet\n3) Delete an Existing Snippet\n4) Exit")
         
 
-
-
 if __name__ == '__main__':
+    
     manager = Snippet_Manager()
+    
     while(True):
         # clears terminal, only for mac and linux
         os.system('clear')
         manager.print_menu()
+        
         while(True):
             try:
                 user_input = int(input("Enter Number of Choice: "))

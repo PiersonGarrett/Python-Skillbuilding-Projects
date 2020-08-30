@@ -29,4 +29,5 @@ def check_card(credit_card_number):
 
 
 if __name__ == '__main__':
+    # The number provided isn't real and isn't even 16 digits, Luhn's algorithm works on any number greater than one digit and is a simple check.
     print(check_card(79927398713))

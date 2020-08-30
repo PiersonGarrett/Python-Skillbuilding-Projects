@@ -11,10 +11,11 @@
 # Import requried libraries and classes
 from Snippet import Snippet
 from errors import UserInputError
-import os
+import re, os, sys
+
 # Class for a Code Snippet
 
-# Eventually whatever is needed for a GUI will be imported and built here
+# Eventually whatever is needed for a GUI will be imported and built here with a better method for inputing user code snippets. Currently the user can only input one line of code
 
 class Snippet_Manager:
     # A list for easy lookup of snippets
@@ -33,11 +34,31 @@ class Snippet_Manager:
         storage_file = 'code_snippets.txt'
         
         with open(storage_file,'a') as storage_file:
-            storage_file.write(f"Label: {snippet.label}\nLanguage: {snippet.language}\nCode:\n{snippet.snippet_string}\n")
+            storage_file.write(f"\nLabel: {snippet.label}\nLanguage: {snippet.language}\nCode:\n{snippet.snippet_string}\n")
         print("SAVED!")
     
-    def delete_snippet(self, Label):
-        pass
+    def delete_snippet(self, _label):
+        temp_snippet_arr = []
+        # open storage file
+        with open('code_snippets.txt','r') as storage_file:
+            # Read in all the lines from the text file
+            lines = storage_file.read()
+            
+            # Finds all the lables, languages, and snippets
+            labels = re.findall(r'Label:(.+)',lines)
+            languages = re.findall(r'Language:(.+)',lines)
+            code = re.findall(r'Code:\n(.+)',lines)
+
+            # prints all snippets with the given label
+            for index,label in enumerate(labels):
+                # had to use strip because of a weird space that was getting added to the front of strings
+                if label.strip() != _label:
+                    temp_snippet_arr.append(Snippet(labels[index].strip(),languages[index],code[index]))
+        with open('code_snippets.txt','w') as storage_file:
+            for snippet in temp_snippet_arr:
+                storage_file.write(f"\nLabel: {snippet.label}\nLanguage: {snippet.language}\nCode:\n{snippet.snippet_string}\n")
+        print("Deleted!")
+        input("Press enter to continue.")
     # create a new snippet and display for user
     def create_snippet(self):
         # get info for snippet from user, create snippet
@@ -55,15 +76,32 @@ class Snippet_Manager:
                 elif user_choice == 'language':
                     language = input('What would you like to change the language to?\nEnter language: ')
 
-                elif user_choice == 'Snippet':
+                elif user_choice == 'snippet':
                     snippet_string = input('What would you like to change the code to?\nEnter code: ')
             else:
                 break
 
         
-    # Returns code snippet from storage file
+    # Returns code snippet from storage file and prints it with syntax highlighting
     def get_snippet(self,_label):
-        pass
+        temp_snippet_arr = []
+        
+        # open storage file
+        with open('code_snippets.txt','r') as storage_file:
+            # Read in all the lines from the text file
+            lines = storage_file.read()
+            
+            # Finds all the lables, languages, and snippets
+            labels = re.findall(r'Label:(.+)',lines)
+            languages = re.findall(r'Language:(.+)',lines)
+            code = re.findall(r'Code:\n(.+)',lines)
+            
+            # prints all snippets with the given label
+            for index,label in enumerate(labels):
+                # had to use strip because of a weird space that was getting added to the front of strings
+                if label.strip() == _label:
+                    print(Snippet(labels[index],languages[index],code[index]))
+            input("Press enter to continue.")
     
     def get_user_choice(self,option = 0):
         # Checks user input when asking to save, change, or exit
@@ -81,7 +119,8 @@ class Snippet_Manager:
             while user_input not in ["label","language","snippet"]:
                 user_input = input("Please enter label, language, snippet, or exit: ").lower()
             return user_input
-    #  Grab a short title/label, language of snippet, and snippet from user
+
+    #  Grab a short title/label, language of snippet, and snippet from user 
     def get_snippet_info(self):
         user_Label = input("Please enter a Label: ")
         user_Language = input("Please enter a Language: ")
@@ -89,16 +128,42 @@ class Snippet_Manager:
         
         return user_Label, user_Language, user_snippet_string
 
-    # Print a code snippet with syntax highlighting
-    def print_code(self,_label):
-        pass
 
     # Printing the basic menu with options for the user
     def print_menu(self):
-        pass
+        print("Welcome to the Code Snippet Organizer! This is a prototype for a later version, which will feature a GUI and the ability to enter in multiple lines of code.")
+        print("1) Create a New Snippet\n2) View an Existing Snippet\n3) Delete an Existing Snippet\n4) Exit")
+        
 
 
 
 if __name__ == '__main__':
     manager = Snippet_Manager()
-    manager.create_snippet()
+    while(True):
+        # clears terminal, only for mac and linux
+        os.system('clear')
+        manager.print_menu()
+        while(True):
+            try:
+                user_input = int(input("Enter Number of Choice: "))
+                if type(user_input) != int or (user_input > 4 and user_input <= 0):
+                    raise Exception
+            except:
+                while(user_input not in [1,2,3,4]):
+                    user_input = int(input("Please Enter the Number of your Choice: "))
+            break
+
+        if user_input == 1:
+            manager.create_snippet()
+        
+        elif user_input == 2:
+            user_label = input("Please enter the label of the snippet you wish to view: ")
+            manager.get_snippet(user_label)
+        
+        elif user_input == 3:
+            snippet_to_delete = input("Enter the label of the snippet you wish to delete: ")
+            manager.delete_snippet(snippet_to_delete)
+
+        else:
+            break
+    

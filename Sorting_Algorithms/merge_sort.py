@@ -19,9 +19,11 @@ def merge(leftarr,rightarr):
     #TODO: keep getting nunetype error
 
     if leftarr[0] > rightarr[-1]:
-        return rightarr.extend(leftarr)
+        rightarr.extend(leftarr)
+        return rightarr
     elif leftarr[-1] < rightarr[0]:
-        return leftarr.extend(rightarr)
+        leftarr.extend(rightarr)
+        return leftarr
     else:
         # We can merge the two lists using the following method:
             # Keep track of a index for the left array and right array, start both at 0th index
@@ -31,21 +33,35 @@ def merge(leftarr,rightarr):
             # of the temp array
         leftindex, rightindex = 0,0
         temp = []
-        while(leftindex < len(leftarr) - 1 and rightindex < len(rightarr) - 1):
+        
+        # print("left")
+        # print(leftarr)
+        # print("right")
+        # print(rightarr)
+        
+        while(leftindex <= len(leftarr) - 1 and rightindex <= len(rightarr) - 1):
             if leftarr[leftindex] < rightarr[rightindex]:
                 temp.append(leftarr[leftindex])
-                leftarr += 1
+                leftindex += 1
             elif leftarr[leftindex] > rightarr[rightindex]:
                 temp.append(rightarr[rightindex])
-                rightarr += 1
-            else:#if leftarr[leftindex] == rightarr[rightindex]:
+                rightindex += 1
+            elif leftarr[leftindex] == rightarr[rightindex]:
                 temp.append(leftarr[leftindex])
-                leftarr += 1
-        
+                temp.append(rightarr[rightindex])
+                leftindex += 1
+                rightindex += 1
+            
+            # print("left index: {}".format(leftindex))
+            # print("right index: {}".format(rightindex))
+            # print(temp)
 
-        if leftindex == len(leftarr) - 1:
+
+        
+        if leftindex >= len(leftarr):
+            print(rightarr[rightindex:])
             temp.extend(rightarr[rightindex:])
-        elif rightindex == len(rightarr) - 1:
+        elif rightindex >= len(rightarr):
             temp.extend(leftarr[leftindex:])
         return temp
 
@@ -55,23 +71,20 @@ def merge_sort(num_list):
     if len(num_list) <= 1:
         return num_list
     # split the array into two pieces
-    split_index = math.floor(len(num_list)/2)
+    split_index = int(math.floor(len(num_list)/2))
     leftarr = num_list[:split_index]
     rightarr = num_list[split_index:]
+   
 
     # call merge sort on both halfs refered to as left and right from now on
-    print("left")
     leftarr = merge_sort(leftarr)
-    print("right")
     rightarr = merge_sort(rightarr)
 
     # merge back together
-    print("Merge")
-    print(leftarr)
-    print(rightarr)
     num_list = merge(leftarr,rightarr)
 
     return num_list
 
 if __name__ == '__main__':
-    print(merge_sort([3,2,1]))
+    l = [5,32,15,4,7,11,56,56]
+    print(merge_sort(l))

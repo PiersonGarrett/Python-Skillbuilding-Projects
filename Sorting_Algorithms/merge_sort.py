@@ -34,11 +34,6 @@ def merge(leftarr,rightarr):
         leftindex, rightindex = 0,0
         temp = []
         
-        # print("left")
-        # print(leftarr)
-        # print("right")
-        # print(rightarr)
-        
         while(leftindex <= len(leftarr) - 1 and rightindex <= len(rightarr) - 1):
             if leftarr[leftindex] < rightarr[rightindex]:
                 temp.append(leftarr[leftindex])
@@ -51,12 +46,6 @@ def merge(leftarr,rightarr):
                 temp.append(rightarr[rightindex])
                 leftindex += 1
                 rightindex += 1
-            
-            # print("left index: {}".format(leftindex))
-            # print("right index: {}".format(rightindex))
-            # print(temp)
-
-
         
         if leftindex >= len(leftarr):
             print(rightarr[rightindex:])
@@ -75,7 +64,6 @@ def merge_sort(num_list):
     leftarr = num_list[:split_index]
     rightarr = num_list[split_index:]
    
-
     # call merge sort on both halfs refered to as left and right from now on
     leftarr = merge_sort(leftarr)
     rightarr = merge_sort(rightarr)

@@ -1,10 +1,9 @@
 class Node:
-    def __init__(self,node_number):
-        self.node_number = node_number
-        self.edges = []
+    def __init__(self,num=0):
+        self.node_number = num
+        self.visited = 0
+        #self.edges = []
     
-    def add_edge(self,connect_node,weight = 0):
-        self.edges.append((self.node_number,connect_node,weight))
     
     def __str__(self):
-        return str(self.edges)
+        return f"Node Number: {self.node_number}, Visited {self.visited}"

@@ -1,9 +1,9 @@
 class Node:
-    def __init__(self,num=0):
-        self.node_number = num
+    def __init__(self,name):
+        self.node_name = name
         self.visited = 0
         #self.edges = []
     
     
     def __str__(self):
-        return f"Node Number: {self.node_number}, Visited {self.visited}"
+        return f"Node Name: {self.node_name}, Visited {self.visited}"

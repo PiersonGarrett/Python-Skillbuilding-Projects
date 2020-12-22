@@ -1,51 +1,47 @@
 # Graph Class, Inherits Node Class
 # Graph stores list of nodes and has implementation of different
-# Graph based algorithsm like Djikstras
+# graph based algorithms like Djikstras
 
 from Node import Node
 
 class Graph(Node):
-    
-    def __init__(self):
-        self.node_list = []
-        self.edge_list = []
+    # store nodes/edges as dictonary?
+    def __init__(self,node_names,links):
+        self.node_names = node_names
+        self.edge_list = links
+        self.node_list = dict(zip(self.node_names,[Node(node_name) for node_name in node_names]))
+        self.node_list = self.node_list
+        # Creating an empty dictionary to hold links
+        self.graph = {node: [] for node in node_names}
+        self.add_edge(self.edge_list)
         self.adjacency_matrix = []
         self.curr_num = 0
     
     def __str__(self):
-        return str(self.node_list[:])
+        return "Hello"
     
-    def add_edge(self,node1,node2,weight = 0):
-        if (node1.node_number, node2.node_number,weight) not in self.edge_list:
-            self.edge_list.append((node1.node_number, node2.node_number,weight))
-    
-    def get_node(self,node_number):
-        return self.node_list[node_number]
-    
-    def create_node(self):
-        new_node = Node(self.curr_num)
-        self.node_list.append(new_node)
-        self.curr_num += 1
-    
-    # for an undirected graph use method with directed = 0, for directed set directed = 1
-    def generate_adjacency_matrix(self,directed = 0):
-        # need to use this expression to generate matrix otherwise columns become linked
-        self.adjacency_matrix = [[0]*len(self.node_list) for i in range(len(self.node_list))]
+    def get_node(self,node_name):
+        return self.node_list.get(node_name)
+
+    def add_node(self,node_name):
+        self.node_list[node_name] = Node(node_name)
+
+    def add_edge(self,links):
+        # checks for single link added
+        if type(links) == tuple:
+            links = [links]
+        # adds links to graph without duplications
+        for node in self.node_names:
+            for link in links:
+                # checks for duplicate links
+                if node == link[0] and link[1] not in self.graph[node]:
+                    self.graph[node].append(link[1])
         
-        if directed == 1:
-            for edge in self.edge_list:
-                self.adjacency_matrix[edge[0]][edge[1]] = 1
-        elif directed == 0:
-            for edge in self.edge_list:
-                self.adjacency_matrix[edge[0]][edge[1]] = 1
-                self.adjacency_matrix[edge[1]][edge[0]] = 1
-        
-        print(self.adjacency_matrix)
+    def remove_edge(self,link):
+        self.graph[link[0]].pop(self.graph[link[0]].index(link[1]))
     
     def eulerian_path(self):
-        path = []
-        
-
+       pass
 
     def connected_graph(self):
         pass
@@ -56,17 +52,21 @@ class Graph(Node):
     def MST(self):
         pass
 
-
-    
-
-
 if __name__ == "__main__":
-    G = Graph()
-    G.create_node()
-    G.create_node()
-    G.create_node()
-    G.add_edge(G.node_list[0],G.node_list[1])
-    G.add_edge(G.node_list[0],G.node_list[2])
+    node_names = ["A","B","C"]
+    node_links = [("A","B"),("A","C"),("A","C")]
+    d = {i:[] for i in node_names}
+    G = Graph(node_names,node_links)
+    print(G.graph)
+    node_links2 = ("B","C")
+    G.add_edge(node_links2)
+    print(G.graph)
+    G.remove_edge(("A","C"))
+    G.add_node("Z")
+    print(G.graph)
+    print(G.get_node("A"))
+    for node in G.node_list:
+        print(node)
     
-    G.generate_adjacency_matrix(1)
+
     
